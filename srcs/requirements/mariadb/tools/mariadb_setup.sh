@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e  # exit immediately if a command fails
+set -x  # print each command before executing
 
 DB_NAME=$(cat /run/secrets/db_name)
 DB_USER=$(cat /run/secrets/db_user)
@@ -13,8 +14,9 @@ chown mysql:mysql /run/mysqld
 DB_DATA_DIR="/var/lib/mysql"
 
 # Initialize MariaDB if first time
-if [ ! -d "$DB_DATA_DIR/mysql" ]; then
+if [ ! -f "$DB_DATA_DIR/.initialized" ]; then
 	echo "[INFO] Initializing MariaDB data directory..."
+	rm -rf /var/lib/mysql/*
 	mysql_install_db --user=mysql --datadir="$DB_DATA_DIR"
 
 	echo "[INFO] Starting temporary MariaDB..."
@@ -32,6 +34,8 @@ EOSQL
 
 	echo "[INFO] Shutting down temporary MariaDB..."
 	mysqladmin -uroot -p"$DB_ROOT_PASSWORD" shutdown
+
+	touch "$DB_DATA_DIR/.initialized"
 fi
 
 exec gosu mysql "$@"

@@ -44,5 +44,12 @@ clean: down
 
 fclean: clean
 	docker system prune -af --volumes
+	sudo rm -rf /home/miguel/data/mariadb
+	sudo rm -rf /home/miguel/data/wordpress
+	mkdir -p /home/miguel/data/mariadb
+	mkdir -p /home/miguel/data/wordpress
+	sudo chown -R 999:999 /home/miguel/data/mariadb
+	sudo chown -R 999:999 /home/miguel/data/wordpress
+
 
 .PHONY: all up down re logs ps clean fclean
