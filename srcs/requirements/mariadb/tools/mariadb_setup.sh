@@ -6,6 +6,10 @@ DB_USER=$(cat /run/secrets/db_user)
 DB_PASSWORD=$(cat /run/secrets/db_password)
 DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
 
+# Create /run/mysqld for the socket
+mkdir -p /run/mysqld
+chown mysql:mysql /run/mysqld
+
 DB_DATA_DIR="/var/lib/mysql"
 
 # Initialize MariaDB if first time
@@ -30,4 +34,4 @@ EOSQL
 	mysqladmin -uroot -p"$DB_ROOT_PASSWORD" shutdown
 fi
 
-exec "$@"
+exec gosu mysql "$@"

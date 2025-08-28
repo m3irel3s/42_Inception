@@ -1,6 +1,5 @@
 
 services:
-
   nginx:
     container_name: nginx
     build: ./requirements/nginx
@@ -9,8 +8,8 @@ services:
       - "443:443"
     networks:
       - inception
-    # depends_on:
-    #   - wordpress
+    depends_on:
+      - wordpress
     env_file:
       - .env
     restart: always
@@ -29,6 +28,7 @@ services:
       - db_password
       - wp_admin
       - wp_admin_password
+      - wp_admin_email
       - wp_user
       - wp_user_password
     depends_on:
@@ -71,7 +71,6 @@ volumes:
 
 networks:
   inception:
-    name: inception_network
     driver: bridge
 
 secrets:
@@ -87,6 +86,8 @@ secrets:
     file: ../secrets/wp_admin_password.txt
   wp_admin:
     file: ../secrets/wp_admin.txt
+  wp_admin_email:
+    file: ../secrets/wp_admin_email.txt
   wp_user_password:
     file: ../secrets/wp_user_password.txt
   wp_user:
